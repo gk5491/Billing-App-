@@ -1102,7 +1102,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
 
             <div
               id="customer-statement"
-              className="bg-white dark:bg-white text-slate-900 shadow-xl p-6 w-full max-w-[210mm] min-h-[297mm] h-fit"
+              className="bg-white dark:bg-white text-slate-900 shadow-xl px-12 py-10 w-full max-w-[210mm] min-h-[297mm] h-fit"
               style={{ color: '#000000' }}
             >
                   {/* Branding Header */}
