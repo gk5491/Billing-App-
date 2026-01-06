@@ -726,21 +726,21 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
               </div>
             </div>
 
-            <div className="flex-1 p-6 overflow-auto">
-              <div className="max-w-2xl">
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+            <div className="flex-1 overflow-auto">
+              <div className="w-full">
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 mx-6 mt-6">
                   <p className="text-sm text-blue-800 dark:text-blue-200">
                     You can request your contact to directly update the GSTIN by sending an email.{' '}
                     <button className="text-blue-600 font-medium">Send email</button>
                   </p>
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-6 mx-6">
                   <p className="text-sm text-slate-500">Payment due period</p>
                   <p className="text-sm font-medium">{customer.paymentTerms || 'Due on Receipt'}</p>
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-6 mx-6">
                   <h4 className="text-lg font-semibold mb-4">Receivables</h4>
                   <table className="w-full text-sm">
                     <thead>
@@ -761,7 +761,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
                   <button className="text-sm text-blue-600 mt-2">Enter Opening Balance</button>
                 </div>
 
-                <div className="mb-6">
+                <div className="mb-6 mx-6">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-lg font-semibold">Income</h4>
                     <div className="flex items-center gap-2">
@@ -798,7 +798,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
                   <p className="text-sm mt-4">Total Income ( Last 6 Months ) - {formatCurrency(0)}</p>
                 </div>
 
-                <div>
+                <div className="mx-6 pb-6">
                   <h4 className="text-lg font-semibold mb-4">Activity Timeline</h4>
                   <div className="space-y-4">
                     {activities.length === 0 ? (
@@ -840,8 +840,8 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
           </div>
         </TabsContent>
 
-        <TabsContent value="comments" className="flex-1 overflow-auto p-6 mt-0">
-          <div className="max-w-2xl">
+        <TabsContent value="comments" className="flex-1 overflow-auto mt-0">
+          <div className="w-full p-6">
             <div className="border border-slate-200 dark:border-slate-700 rounded-lg mb-6">
               <div className="flex items-center gap-2 p-2 border-b border-slate-200 dark:border-slate-700">
                 <Button variant="ghost" size="icon" className="h-8 w-8" data-testid="button-bold">
@@ -1047,7 +1047,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
         </TabsContent>
 
         <TabsContent value="statement" className="flex-1 overflow-hidden mt-0">
-          <div className="h-full overflow-auto p-8 flex flex-col items-center bg-slate-100 dark:bg-slate-800">
+          <div className="h-full overflow-auto p-4 flex flex-col items-center bg-slate-100 dark:bg-slate-800">
             {/* Statement Options Bar */}
             <div className="w-full max-w-[210mm] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-6 shadow-sm">
               <div className="flex flex-wrap items-center justify-between gap-4">
@@ -1102,7 +1102,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
 
             <div
               id="customer-statement"
-              className="bg-white dark:bg-white text-slate-900 shadow-xl p-12 w-full max-w-[210mm] min-h-[297mm] h-fit"
+              className="bg-white dark:bg-white text-slate-900 shadow-xl p-6 w-full max-w-[210mm] min-h-[297mm] h-fit"
               style={{ color: '#000000' }}
             >
                   {/* Branding Header */}
@@ -1516,9 +1516,21 @@ export default function CustomersPage() {
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="icon" className="h-9 w-9">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon" className="h-9 w-9" data-testid="button-more-options">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>
+                      <Download className="mr-2 h-4 w-4" /> Export
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={fetchCustomers}>
+                      Refresh List
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
 
