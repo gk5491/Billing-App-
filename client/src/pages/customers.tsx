@@ -1046,197 +1046,206 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
           )}
         </TabsContent>
 
-        <TabsContent value="statement" className="flex-1 overflow-auto mt-0">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
-                <Select value={statementPeriod} onValueChange={setStatementPeriod}>
-                  <SelectTrigger className="w-40 h-9" data-testid="select-period">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    <SelectValue placeholder="This Month" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="this-month">This Month</SelectItem>
-                    <SelectItem value="last-month">Last Month</SelectItem>
-                    <SelectItem value="this-quarter">This Quarter</SelectItem>
-                    <SelectItem value="this-year">This Year</SelectItem>
-                    <SelectItem value="custom">Custom</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={statementFilter} onValueChange={setStatementFilter}>
-                  <SelectTrigger className="w-32 h-9" data-testid="select-filter">
-                    <SelectValue placeholder="Filter By: All" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Filter By: All</SelectItem>
-                    <SelectItem value="outstanding">Outstanding</SelectItem>
-                    <SelectItem value="paid">Paid</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={handlePrint} data-testid="button-print">
-                  <Printer className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={handleDownloadPDF} disabled={isDownloading} data-testid="button-download-pdf">
-                  {isDownloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                </Button>
-                <Button variant="outline" size="icon" className="h-9 w-9" data-testid="button-download-excel">
-                  <FileText className="h-4 w-4" />
-                </Button>
-                <Button className="bg-blue-600 hover:bg-blue-700 gap-1.5" size="sm" data-testid="button-send-email">
-                  <Send className="h-4 w-4" />
-                  Send Email
-                </Button>
-              </div>
-            </div>
-
-            <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold">Customer Statement for {customer.name}</h3>
-              <p className="text-sm text-slate-500">From 01/12/2025 To 31/12/2025</p>
-            </div>
-
-            <div id="customer-statement" className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden print:border-0 print:shadow-none">
-              {/* Header Design */}
-              <div className="p-6 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-800">
-                <div className="flex flex-col md:flex-row justify-between gap-6">
-                  <div className="space-y-6">
-                    {branding?.logo?.url ? (
-                      <img src={branding.logo.url} alt="Organization Logo" className="h-20 w-auto object-contain" />
-                    ) : (
-                      <h4 className="text-3xl font-black tracking-tighter text-blue-600">{currentOrg?.name || 'Organization'}</h4>
-                    )}
-                    <div className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
-                      <p className="font-bold text-slate-900 dark:text-white text-base">{currentOrg?.name}</p>
-                      {currentOrg?.street1 && <p>{currentOrg.street1}</p>}
-                      {currentOrg?.street2 && <p>{currentOrg.street2}</p>}
-                      <p>{[currentOrg?.city, currentOrg?.state, currentOrg?.postalCode].filter(Boolean).join(', ')}</p>
-                      {currentOrg?.gstin && <p className="pt-1"><span className="font-semibold text-slate-800 dark:text-slate-200">GSTIN:</span> {currentOrg.gstin}</p>}
-                    </div>
+        <TabsContent value="statement" className="flex-1 overflow-hidden mt-0">
+          <ResizablePanelGroup direction="horizontal" className="h-full w-full" autoSaveId="customer-statement-layout">
+            <ResizablePanel defaultSize={40} minSize={30} className="flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700">
+              <div className="p-6 overflow-auto h-full">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold">Statement Options</h3>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 block">Statement Period</label>
+                    <Select value={statementPeriod} onValueChange={setStatementPeriod}>
+                      <SelectTrigger className="w-full h-9" data-testid="select-period">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        <SelectValue placeholder="Select period" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="this-month">This Month</SelectItem>
+                        <SelectItem value="last-month">Last Month</SelectItem>
+                        <SelectItem value="this-quarter">This Quarter</SelectItem>
+                        <SelectItem value="this-year">This Year</SelectItem>
+                        <SelectItem value="custom">Custom Range</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-
-                  <div className="text-right flex flex-col justify-between items-end">
-                    <div className="text-right mb-8">
-                      <h1 className="text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-1">Statement</h1>
-                      <p className="text-blue-600 font-bold tracking-widest text-sm">01/12/2025 TO 31/12/2025</p>
-                    </div>
-
-                    <div className="space-y-1 text-sm text-slate-600 dark:text-slate-400 max-w-xs">
-                      <p className="font-bold text-slate-500 uppercase tracking-wider text-xs mb-2">Customer Details</p>
-                      <p className="font-black text-blue-600 text-xl leading-none mb-1">{customer.name}</p>
-                      {customer.companyName && <p className="font-bold text-slate-800 dark:text-slate-200">{customer.companyName}</p>}
-                      <div className="space-y-0.5">
-                        {formatAddress(customer.billingAddress).map((line, i) => (
-                          <p key={i}>{line}</p>
-                        ))}
-                      </div>
-                      {customer.gstin && <p className="pt-1"><span className="font-semibold text-slate-800 dark:text-slate-200">GSTIN:</span> {customer.gstin}</p>}
-                    </div>
+                  <div>
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 block">Filter Transactions</label>
+                    <Select value={statementFilter} onValueChange={setStatementFilter}>
+                      <SelectTrigger className="w-full h-9" data-testid="select-filter">
+                        <SelectValue placeholder="Filter By: All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Filter By: All</SelectItem>
+                        <SelectItem value="outstanding">Outstanding</SelectItem>
+                        <SelectItem value="paid">Paid</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex flex-col gap-2 pt-2">
+                    <Button variant="outline" size="sm" className="w-full justify-start" onClick={handlePrint} data-testid="button-print">
+                      <Printer className="h-4 w-4 mr-2" /> Print
+                    </Button>
+                    <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleDownloadPDF} disabled={isDownloading} data-testid="button-download-pdf">
+                      {isDownloading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
+                      Download PDF
+                    </Button>
+                    <Button variant="outline" size="sm" className="w-full justify-start" data-testid="button-download-excel">
+                      <FileText className="h-4 w-4 mr-2" /> Download Excel
+                    </Button>
+                    <Button className="bg-blue-600 hover:bg-blue-700 w-full justify-start mt-2" size="sm" data-testid="button-send-email">
+                      <Send className="h-4 w-4 mr-2" /> Send Email
+                    </Button>
                   </div>
                 </div>
               </div>
-
-              {/* Summary Cards */}
-              <div className="px-6 py-5 bg-slate-50/30 dark:bg-slate-900/20">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm transition-all hover:shadow-md">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Opening Balance</p>
-                    <p className="text-lg font-bold text-slate-900 dark:text-white">{formatCurrency(0)}</p>
-                  </div>
-                  <div className="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm transition-all hover:shadow-md">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Invoiced Amount</p>
-                    <p className="text-lg font-bold text-slate-900 dark:text-white">{formatCurrency(invoicedAmount)}</p>
-                  </div>
-                  <div className="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm transition-all hover:shadow-md">
-                    <p className="text-[9px] font-black text-blue-500 uppercase tracking-widest mb-1">Amount Received</p>
-                    <p className="text-lg font-bold text-blue-600">{formatCurrency(amountReceived)}</p>
-                  </div>
-                  <div className="bg-blue-600 p-3 rounded-xl border border-blue-700 shadow-lg transform hover:-translate-y-1 transition-all">
-                    <p className="text-[9px] font-black text-blue-100 uppercase tracking-widest mb-1">Balance Due</p>
-                    <p className="text-xl font-black text-white">{formatCurrency(balanceDue)}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Transactions Table */}
-              <div className="px-6 pb-6">
-                <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
-                  <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
-                    <colgroup>
-                      <col style={{ width: '11%' }} />
-                      <col style={{ width: '22%' }} />
-                      <col style={{ width: '12%' }} />
-                      <col style={{ width: '18%' }} />
-                      <col style={{ width: '18%' }} />
-                      <col style={{ width: '19%' }} />
-                    </colgroup>
-                    <thead>
-                      <tr className="bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-600">
-                        <th className="py-3 px-2 text-left font-bold uppercase tracking-widest text-[9px]">Date</th>
-                        <th className="py-3 px-2 text-left font-bold uppercase tracking-widest text-[9px]">Transaction Details</th>
-                        <th className="py-3 px-2 text-center font-bold uppercase tracking-widest text-[9px]">Status</th>
-                        <th className="py-3 px-2 text-right font-bold uppercase tracking-widest text-[9px]">Amount</th>
-                        <th className="py-3 px-2 text-right font-bold uppercase tracking-widest text-[9px]">Payments</th>
-                        <th className="py-3 px-2 text-right font-bold uppercase tracking-widest text-[9px]">Balance</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                      {statementTransactions.length === 0 ? (
-                        <tr>
-                          <td colSpan={6} className="py-16 text-center text-slate-400 italic font-medium">
-                            <BookOpen className="h-8 w-8 mx-auto mb-3 opacity-20" />
-                            No transactions found for the selected period
-                          </td>
-                        </tr>
-                      ) : (
-                        statementTransactions.map((tx, idx) => (
-                          <tr key={tx.id || idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                            <td className="py-3 px-2 whitespace-nowrap text-slate-500 dark:text-slate-400 font-medium">{formatDate(tx.date)}</td>
-                            <td className="py-3 px-2">
-                              <div className="flex flex-col">
-                                <span className="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors truncate">{tx.type}</span>
-                                <span className="text-xs text-slate-400 font-medium truncate">#{tx.number}</span>
-                              </div>
-                            </td>
-                            <td className="py-3 px-2 text-center">
-                              <Badge variant="outline" className={`text-[9px] h-5 px-2 font-black uppercase tracking-widest border-2 ${tx.status === 'PAID' ? 'bg-green-50 text-green-700 border-green-100' :
-                                tx.status === 'PARTIALLY_PAID' ? 'bg-amber-50 text-amber-700 border-amber-100' :
-                                  'bg-slate-50 text-slate-600 border-slate-100'
-                                }`}>
-                                {tx.status}
-                              </Badge>
-                            </td>
-                            <td className="py-3 px-2 text-right font-bold text-slate-900 dark:text-white whitespace-nowrap">
-                              {tx.type === 'Invoice' ? formatCurrency(tx.amount) : '—'}
-                            </td>
-                            <td className="py-3 px-2 text-right text-blue-600 font-bold whitespace-nowrap">
-                              {tx.type === 'Payment' || (tx.amount - tx.balance > 0) ?
-                                formatCurrency(tx.type === 'Payment' ? tx.amount : (tx.amount - tx.balance)) :
-                                '—'
-                              }
-                            </td>
-                            <td className="py-3 px-2 text-right font-black text-slate-900 dark:text-white bg-slate-50/30 dark:bg-slate-900/10 whitespace-nowrap">
-                              {formatCurrency(tx.balance || 0)}
-                            </td>
-                          </tr>
-                        ))
+            </ResizablePanel>
+            <ResizableHandle withHandle className="w-1 bg-slate-200 hover:bg-blue-400 hover:w-1.5 transition-all cursor-col-resize" />
+            <ResizablePanel defaultSize={60} minSize={30} className="bg-slate-100 dark:bg-slate-800">
+              <div className="h-full overflow-auto p-8 flex justify-center">
+                <div
+                  id="customer-statement"
+                  className="bg-white dark:bg-white text-slate-900 shadow-xl p-12 w-full max-w-[210mm] min-h-[297mm] h-fit"
+                  style={{ color: '#000000' }}
+                >
+                  {/* Branding Header */}
+                  <div className="flex justify-between items-start mb-12">
+                    <div className="space-y-4">
+                      {branding?.logo?.url && (
+                        <img src={branding.logo.url} alt="Logo" className="h-16 object-contain" />
                       )}
-                    </tbody>
-                    <tfoot>
-                      <tr className="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-black border-t-4 border-blue-600">
-                        <td colSpan={5} className="py-3 px-2 text-right uppercase tracking-wider text-[10px]">Closing Balance Due</td>
-                        <td className="py-3 px-2 text-right text-lg whitespace-nowrap font-black">{formatCurrency(balanceDue)}</td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
+                      <div className="space-y-1">
+                        <h2 className="text-2xl font-bold uppercase">{currentOrg?.name}</h2>
+                        <p className="text-sm text-slate-600">{currentOrg?.street1}</p>
+                        {currentOrg?.street2 && <p className="text-sm text-slate-600">{currentOrg.street2}</p>}
+                        <p className="text-sm text-slate-600">
+                          {[currentOrg?.city, currentOrg?.state, currentOrg?.postalCode].filter(Boolean).join(', ')}
+                        </p>
+                        {currentOrg?.gstin && <p className="text-sm font-semibold pt-1">GSTIN: {currentOrg.gstin}</p>}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <h1 className="text-4xl font-light text-slate-400 uppercase tracking-widest mb-4">Statement</h1>
+                      <div className="space-y-1 text-sm">
+                        <p><span className="text-slate-400 uppercase">Date:</span> {formatDate(new Date().toISOString())}</p>
+                        <p><span className="text-slate-400 uppercase">Period:</span> 01/12/2025 TO 31/12/2025</p>
+                      </div>
+                    </div>
+                  </div>
 
-                <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700 text-center">
-                  <p className="text-[10px] text-slate-400 font-medium uppercase tracking-[0.2em]">Thank you for your business</p>
+                  {/* Address Grid */}
+                  <div className="grid grid-cols-2 gap-12 mb-12">
+                    <div>
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">To</h3>
+                      <div className="space-y-1">
+                        <p className="font-bold text-blue-600 text-lg leading-none mb-1">{customer.name}</p>
+                        {customer.companyName && <p className="font-bold text-sm text-slate-800">{customer.companyName}</p>}
+                        {formatAddress(customer.billingAddress).map((part, i) => (
+                          <p key={i} className="text-sm text-slate-600">{part}</p>
+                        ))}
+                        {customer.gstin && <p className="text-sm font-semibold pt-1">GSTIN: {customer.gstin}</p>}
+                      </div>
+                    </div>
+                    <div className="bg-slate-50 p-6 rounded-sm border border-slate-100">
+                      <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Account Summary</h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-500">Opening Balance</span>
+                          <span className="font-medium">{formatCurrency(0)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-500">Invoiced Amount</span>
+                          <span className="font-medium">{formatCurrency(invoicedAmount)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-500">Amount Received</span>
+                          <span className="font-medium text-green-600">{formatCurrency(amountReceived)}</span>
+                        </div>
+                        <div className="pt-3 border-t border-slate-200 flex justify-between">
+                          <span className="font-bold uppercase text-xs">Balance Due</span>
+                          <span className="font-bold text-lg">{formatCurrency(balanceDue)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Transactions Table */}
+                  <div className="border border-slate-200 rounded-sm overflow-hidden mb-12">
+                    <table className="w-full" style={{ tableLayout: 'fixed' }}>
+                      <colgroup>
+                        <col style={{ width: '15%' }} />
+                        <col style={{ width: '40%' }} />
+                        <col style={{ width: '15%' }} />
+                        <col style={{ width: '15%' }} />
+                        <col style={{ width: '15%' }} />
+                      </colgroup>
+                      <thead>
+                        <tr className="bg-slate-900 text-white">
+                          <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider">Date</th>
+                          <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider">Transactions</th>
+                          <th className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-wider">Amount</th>
+                          <th className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-wider">Payments</th>
+                          <th className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-wider">Balance</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {statementTransactions.length === 0 ? (
+                          <tr>
+                            <td colSpan={5} className="px-4 py-12 text-center text-slate-400 italic">No transactions in this period</td>
+                          </tr>
+                        ) : (
+                          statementTransactions.map((tx) => (
+                            <tr key={tx.id} className="hover:bg-slate-50 transition-colors">
+                              <td className="px-4 py-4 text-xs">{formatDate(tx.date)}</td>
+                              <td className="px-4 py-4">
+                                <p className="text-xs font-bold">{tx.type} {tx.number}</p>
+                                {tx.referenceNumber && <p className="text-[10px] text-slate-400">Ref: {tx.referenceNumber}</p>}
+                              </td>
+                              <td className="px-4 py-4 text-xs text-right">
+                                {tx.type === 'Invoice' ? formatCurrency(tx.amount) : '—'}
+                              </td>
+                              <td className="px-4 py-4 text-xs text-right text-green-600">
+                                {tx.type === 'Payment' || (tx.amount - (tx.balance || 0) > 0) ?
+                                  formatCurrency(tx.type === 'Payment' ? tx.amount : (tx.amount - (tx.balance || 0))) :
+                                  '—'
+                                }
+                              </td>
+                              <td className="px-4 py-4 text-xs text-right font-bold">
+                                {formatCurrency(tx.balance || 0)}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                      <tfoot>
+                        <tr className="bg-slate-50 border-t-2 border-slate-900">
+                          <td colSpan={4} className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-wider">Closing Balance</td>
+                          <td className="px-4 py-3 text-right text-sm font-black">{formatCurrency(balanceDue)}</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+
+                  {/* Footer Branding */}
+                  <div className="mt-auto pt-12 border-t border-slate-100">
+                    <div className="flex justify-between items-end">
+                      <div className="text-[10px] text-slate-400 space-y-1 uppercase tracking-widest font-medium">
+                        <p>This is a computer generated statement.</p>
+                        <p>Thank you for your business</p>
+                      </div>
+                      {branding?.signature?.url && (
+                        <div className="text-right space-y-2">
+                          <img src={branding.signature.url} alt="Signature" className="h-12 ml-auto object-contain" />
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 border-t border-slate-200 pt-2 px-4">Authorized Signature</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </TabsContent>
       </Tabs>
     </div>
