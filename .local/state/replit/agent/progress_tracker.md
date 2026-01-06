@@ -153,28 +153,20 @@
 [x] 153. Session restart - reinstalled cross-env and verified application running (Dec 29, 2025 - current session)
 [x] 154. Implemented comprehensive Organization Form with all fields (Organization Name, Industry, Location, State, Streets, City, Postal Code, Currency, Language, Timezone, GST Registration, Note) (Dec 29, 2025)
 [x] 155. Added full CRUD operations for Organizations (Create, Read, Update, Delete) with Edit button on organization cards (Dec 29, 2025)
-[x] 156. Updated Organization schema with all new fields and types (Dec 29, 2025)
-[x] 157. Session restart - reinstalled cross-env and verified application running (Dec 29, 2025 - current session)
-[x] 158. Created reusable PurchasePDFHeader component for standard PDF header across all Purchase modules (Dec 29, 2025)
-[x] 159. Implemented PDF header with Organization data fetching for Purchase Orders (Dec 29, 2025)
-[x] 160. Integrated PurchasePDFHeader into Bills, Payments Made, and Vendor Credits modules (Dec 29, 2025)
-[x] 161. Session restart - reinstalled cross-env and verified application running (Dec 30, 2025)
-[x] 162. Fixed sidebar accordion behavior - sections now stay open when clicking subsections, only one section can be open at a time (Dec 30, 2025)
-[x] 163. Session restart - reinstalled cross-env and verified application running (Dec 30, 2025 - current session)
-[x] 164. Implemented resizable split view for Purchase Orders and PDF panel with persistent layout (Dec 30, 2025)
-[x] 165. Session restart - reinstalled cross-env and verified application running (Dec 31, 2025)
-[x] 166. Fixed e-Way Bills layout issue - list panel now hidden when creating new e-Way Bill (Dec 31, 2025)
-[x] 167. Converted Record Payment from modal to full-page form layout (Dec 31, 2025)
-   - Removed Dialog/DialogContent wrapper completely
-   - Converted PaymentCreateDialog to PaymentCreateForm (no modal)
-   - Implemented state-based showCreateForm instead of createDialogOpen
-   - Form now renders as full-width ResizablePanel when editing/creating
-   - List panel conditionally hidden when form is open
-   - Both Invoice Payment and Customer Advance work in same full-page layout
-   - Sidebar remains visible, form takes 100% of remaining width
-   - No margins, no max-width constraints, no background overlay
-[x] 168. Session restart - verified application running (Jan 02, 2026)
-[x] 169. All import items completed - application fully functional and ready for use
-[x] 170. Session restart - reinstalled cross-env and verified application running (Jan 05, 2026)
-[x] 171. Session restart - reinstalled cross-env and verified application running (Jan 06, 2026)
-[x] 172. Session restart - reinstalled cross-env and verified application running (Jan 06, 2026 - current session)
+[x] 156. Organization schema updated (Dec 29, 2025)
+[x] 157. Session restart - verified app running (Dec 29, 2025)
+[x] 158. Created reusable PurchasePDFHeader component (Dec 29, 2025)
+[x] 159. Implemented PDF header for Purchase Orders (Dec 29, 2025)
+[x] 160. Integrated PurchasePDFHeader into Bills, Payments Made, Vendor Credits (Dec 29, 2025)
+[x] 161. Session restart - verified app running (Dec 30, 2025)
+[x] 162. Fixed sidebar accordion behavior (Dec 30, 2025)
+[x] 163. Session restart - verified app running (Dec 30, 2025)
+[x] 164. Implemented resizable split view for Purchase Orders (Dec 30, 2025)
+[x] 165. Session restart - verified app running (Dec 31, 2025)
+[x] 166. Fixed e-Way Bills layout issue (Dec 31, 2025)
+[x] 167. Converted Record Payment to full-page form layout (Dec 31, 2025)
+[x] 168. Session restart - verified app running (Jan 02, 2026)
+[x] 169. All import items completed
+[x] 170. Session restart - verified app running (Jan 05, 2026)
+[x] 171. Session restart - verified app running (Jan 06, 2026)
+[x] 172. Implemented Resizable Split View for Customers page matching professional layout (Jan 06, 2026)

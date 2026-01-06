@@ -1522,97 +1522,143 @@ export default function CustomersPage() {
               </div>
             </div>
 
-            <div className="flex-1 overflow-auto">
+            {!selectedCustomer && (
+              <div className="px-4 py-3 flex items-center gap-2 border-b border-slate-200 bg-white">
+                <div className="relative flex-1 max-w-sm">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    placeholder="Search customers..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-9"
+                    data-testid="input-search"
+                  />
+                </div>
+                <Button variant="outline" className="gap-2">
+                  <Filter className="h-4 w-4" /> Filter
+                </Button>
+              </div>
+            )}
+
+            <div className="flex-1 overflow-auto p-4">
               {loading ? (
-                <div className="p-8 text-center text-slate-500">Loading customers...</div>
+                <div className="flex items-center justify-center py-16">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                </div>
               ) : filteredCustomers.length === 0 ? (
-                <div className="p-8 text-center text-slate-500">
-                  <p>No customers found.</p>
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                    <User className="h-8 w-8 text-slate-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">No customers yet</h3>
+                  <p className="text-slate-500 mb-4 max-w-sm">
+                    Create customers to track their details and manage your sales efficiently.
+                  </p>
                   <Button
                     onClick={() => setLocation("/customers/new")}
-                    className="mt-4 bg-blue-600 hover:bg-blue-700"
+                    className="bg-blue-600 hover:bg-blue-700"
+                    data-testid="button-create-first-customer"
                   >
-                    <Plus className="h-4 w-4 mr-2" /> Create your first customer
+                    <Plus className="h-4 w-4 mr-2" /> Create Your First Customer
                   </Button>
                 </div>
               ) : (
-                <>
-                  <table className="w-full text-sm">
-                    <thead className="bg-slate-50 dark:bg-slate-800 sticky top-0 z-10">
-                      <tr className="border-b border-slate-200 dark:border-slate-700">
-                        <th className="w-10 px-3 py-3 text-left">
-                          <Checkbox
-                            checked={selectedCustomers.length === filteredCustomers.length && filteredCustomers.length > 0}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (selectedCustomers.length === filteredCustomers.length) {
-                                setSelectedCustomers([]);
-                              } else {
-                                setSelectedCustomers(filteredCustomers.map(c => c.id));
-                              }
-                            }}
-                          />
-                        </th>
-                        <th className="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
-                        <th className="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Company Name</th>
-                        <th className="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-                        <th className="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Work Phone</th>
-                        <th className="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Place of Supply</th>
-                        <th className="px-3 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Receivables (BCY)</th>
-                        <th className="w-10 px-3 py-3"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                      {paginatedItems.map((customer) => (
-                        <tr
-                          key={customer.id}
-                          className={`hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors ${selectedCustomer?.id === customer.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                            }`}
-                          onClick={() => handleCustomerClick(customer)}
-                          data-testid={`row-customer-${customer.id}`}
-                        >
-                          <td className="px-3 py-3">
+                <div className="border rounded-lg overflow-hidden bg-white dark:bg-slate-900">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-10">
                             <Checkbox
-                              checked={selectedCustomers.includes(customer.id)}
-                              onClick={(e) => toggleSelectCustomer(customer.id, e)}
+                              checked={selectedCustomers.length === paginatedItems.length && paginatedItems.length > 0}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedCustomers(paginatedItems.map(c => c.id));
+                                } else {
+                                  setSelectedCustomers([]);
+                                }
+                              }}
+                              data-testid="checkbox-select-all"
                             />
-                          </td>
-                          <td className="px-3 py-3">
-                            <span className="font-medium text-blue-600 dark:text-blue-400">{customer.name}</span>
-                          </td>
-                          <td className="px-3 py-3 text-slate-600 dark:text-slate-400">
-                            {customer.companyName || '-'}
-                          </td>
-                          <td className="px-3 py-3 text-slate-600 dark:text-slate-400">
-                            {customer.email || '-'}
-                          </td>
-                          <td className="px-3 py-3 text-slate-600 dark:text-slate-400">
-                            {customer.phone || '-'}
-                          </td>
-                          <td className="px-3 py-3 text-slate-600 dark:text-slate-400">
-                            {customer.placeOfSupply || '-'}
-                          </td>
-                          <td className="px-3 py-3 text-right text-slate-600 dark:text-slate-400">
-                            {formatCurrency(customer.outstandingReceivables || 0)}
-                          </td>
-                          <td className="px-3 py-3">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                  <Search className="h-4 w-4 text-slate-400" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleCustomerClick(customer); }}>
-                                  View Details
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </td>
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Name</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Company Name</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Email</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Phone</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Place of Supply</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Receivables</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Unused Credits</th>
+                          <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                        {paginatedItems.map((customer) => (
+                          <tr
+                            key={customer.id}
+                            className={`hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors ${selectedCustomer?.id === customer.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
+                            onClick={() => handleCustomerClick(customer)}
+                            data-testid={`row-customer-${customer.id}`}
+                          >
+                            <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
+                              <Checkbox
+                                checked={selectedCustomers.includes(customer.id)}
+                                onCheckedChange={() => toggleSelectCustomer(customer.id, {} as any)}
+                                data-testid={`checkbox-customer-${customer.id}`}
+                              />
+                            </td>
+                            <td className="px-4 py-4 text-sm font-medium text-blue-600 hover:underline">
+                              {customer.name}
+                            </td>
+                            <td className="px-4 py-4 text-sm text-slate-500 dark:text-slate-400">
+                              {customer.companyName || '-'}
+                            </td>
+                            <td className="px-4 py-4 text-sm text-slate-600 dark:text-slate-300">
+                              {customer.email}
+                            </td>
+                            <td className="px-4 py-4 text-sm text-slate-600 dark:text-slate-300">
+                              {customer.phone}
+                            </td>
+                            <td className="px-4 py-4 text-sm text-slate-600 dark:text-slate-300">
+                              {customer.placeOfSupply || '-'}
+                            </td>
+                            <td className="px-4 py-4 text-sm font-semibold text-right text-slate-900 dark:text-white">
+                              {formatCurrency(customer.outstandingReceivables || 0)}
+                            </td>
+                            <td className="px-4 py-4 text-sm text-right text-slate-600 dark:text-slate-300">
+                              {formatCurrency(customer.unusedCredits || 0)}
+                            </td>
+                            <td className="px-4 py-4 text-center" onClick={(e) => e.stopPropagation()}>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 hover-elevate">
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem onClick={() => setLocation(`/customers/${customer.id}/edit`)}>
+                                    <Pencil className="mr-2 h-4 w-4" /> Edit
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className="text-red-600 focus:text-red-600"
+                                    onClick={() => {
+                                      setCustomerToDelete(customer.id);
+                                      setDeleteDialogOpen(true);
+                                    }}
+                                  >
+                                    <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+              {filteredCustomers.length > 0 && (
+                <div className="mt-4">
                   <TablePagination
                     currentPage={currentPage}
                     totalPages={totalPages}
@@ -1620,7 +1666,7 @@ export default function CustomersPage() {
                     itemsPerPage={itemsPerPage}
                     onPageChange={goToPage}
                   />
-                </>
+                </div>
               )}
             </div>
           </div>
