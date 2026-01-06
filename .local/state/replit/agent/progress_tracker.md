@@ -165,15 +165,16 @@
 [x] 165. Session restart - reinstalled cross-env and verified application running (Dec 31, 2025)
 [x] 166. Fixed e-Way Bills layout issue - list panel now hidden when creating new e-Way Bill (Dec 31, 2025)
 [x] 167. Converted Record Payment from modal to full-page form layout (Dec 31, 2025)
-    - Removed Dialog/DialogContent wrapper completely
-    - Converted PaymentCreateDialog to PaymentCreateForm (no modal)
-    - Implemented state-based showCreateForm instead of createDialogOpen
-    - Form now renders as full-width ResizablePanel when editing/creating
-    - List panel conditionally hidden when form is open
-    - Both Invoice Payment and Customer Advance work in same full-page layout
-    - Sidebar remains visible, form takes 100% of remaining width
-    - No margins, no max-width constraints, no background overlay
+   - Removed Dialog/DialogContent wrapper completely
+   - Converted PaymentCreateDialog to PaymentCreateForm (no modal)
+   - Implemented state-based showCreateForm instead of createDialogOpen
+   - Form now renders as full-width ResizablePanel when editing/creating
+   - List panel conditionally hidden when form is open
+   - Both Invoice Payment and Customer Advance work in same full-page layout
+   - Sidebar remains visible, form takes 100% of remaining width
+   - No margins, no max-width constraints, no background overlay
 [x] 168. Session restart - verified application running (Jan 02, 2026)
 [x] 169. All import items completed - application fully functional and ready for use
 [x] 170. Session restart - reinstalled cross-env and verified application running (Jan 05, 2026)
 [x] 171. Session restart - reinstalled cross-env and verified application running (Jan 06, 2026)
+[x] 172. Session restart - reinstalled cross-env and verified application running (Jan 06, 2026 - current session)
