@@ -1047,18 +1047,16 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
         </TabsContent>
 
         <TabsContent value="statement" className="flex-1 overflow-hidden mt-0">
-          <ResizablePanelGroup direction="horizontal" className="h-full w-full" autoSaveId="customer-statement-layout">
-            <ResizablePanel defaultSize={40} minSize={30} className="flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700">
-              <div className="p-6 overflow-auto h-full">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold">Statement Options</h3>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 block">Statement Period</label>
+          <div className="h-full overflow-auto p-8 flex flex-col items-center bg-slate-100 dark:bg-slate-800">
+            {/* Statement Options Bar */}
+            <div className="w-full max-w-[210mm] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-4 mb-6 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="flex flex-col gap-1 min-w-[200px]">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Statement Period</label>
                     <Select value={statementPeriod} onValueChange={setStatementPeriod}>
-                      <SelectTrigger className="w-full h-9" data-testid="select-period">
-                        <Calendar className="h-4 w-4 mr-2" />
+                      <SelectTrigger className="h-8 text-xs" data-testid="select-period">
+                        <Calendar className="h-3.5 w-3.5 mr-2 text-slate-400" />
                         <SelectValue placeholder="Select period" />
                       </SelectTrigger>
                       <SelectContent>
@@ -1070,45 +1068,43 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 block">Filter Transactions</label>
+                  <div className="flex flex-col gap-1 min-w-[150px]">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Filter By</label>
                     <Select value={statementFilter} onValueChange={setStatementFilter}>
-                      <SelectTrigger className="w-full h-9" data-testid="select-filter">
-                        <SelectValue placeholder="Filter By: All" />
+                      <SelectTrigger className="h-8 text-xs" data-testid="select-filter">
+                        <SelectValue placeholder="All" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Filter By: All</SelectItem>
+                        <SelectItem value="all">All Transactions</SelectItem>
                         <SelectItem value="outstanding">Outstanding</SelectItem>
                         <SelectItem value="paid">Paid</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex flex-col gap-2 pt-2">
-                    <Button variant="outline" size="sm" className="w-full justify-start" onClick={handlePrint} data-testid="button-print">
-                      <Printer className="h-4 w-4 mr-2" /> Print
-                    </Button>
-                    <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleDownloadPDF} disabled={isDownloading} data-testid="button-download-pdf">
-                      {isDownloading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
-                      Download PDF
-                    </Button>
-                    <Button variant="outline" size="sm" className="w-full justify-start" data-testid="button-download-excel">
-                      <FileText className="h-4 w-4 mr-2" /> Download Excel
-                    </Button>
-                    <Button className="bg-blue-600 hover:bg-blue-700 w-full justify-start mt-2" size="sm" data-testid="button-send-email">
-                      <Send className="h-4 w-4 mr-2" /> Send Email
-                    </Button>
-                  </div>
+                </div>
+                <div className="flex items-center gap-2 border-l border-slate-100 dark:border-slate-800 pl-4">
+                  <Button variant="outline" size="sm" className="h-8 px-3 text-xs" onClick={handlePrint} data-testid="button-print">
+                    <Printer className="h-3.5 w-3.5 mr-2" /> Print
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-8 px-3 text-xs" onClick={handleDownloadPDF} disabled={isDownloading} data-testid="button-download-pdf">
+                    {isDownloading ? <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" /> : <Download className="h-3.5 w-3.5 mr-2" />}
+                    PDF
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-8 px-3 text-xs" data-testid="button-download-excel">
+                    <FileText className="h-3.5 w-3.5 mr-2" /> Excel
+                  </Button>
+                  <Button className="bg-blue-600 hover:bg-blue-700 h-8 px-3 text-xs gap-1.5" size="sm" data-testid="button-send-email">
+                    <Send className="h-3.5 w-3.5" /> Email
+                  </Button>
                 </div>
               </div>
-            </ResizablePanel>
-            <ResizableHandle withHandle className="w-1 bg-slate-200 hover:bg-blue-400 hover:w-1.5 transition-all cursor-col-resize" />
-            <ResizablePanel defaultSize={60} minSize={30} className="bg-slate-100 dark:bg-slate-800">
-              <div className="h-full overflow-auto p-8 flex justify-center">
-                <div
-                  id="customer-statement"
-                  className="bg-white dark:bg-white text-slate-900 shadow-xl p-12 w-full max-w-[210mm] min-h-[297mm] h-fit"
-                  style={{ color: '#000000' }}
-                >
+            </div>
+
+            <div
+              id="customer-statement"
+              className="bg-white dark:bg-white text-slate-900 shadow-xl p-12 w-full max-w-[210mm] min-h-[297mm] h-fit"
+              style={{ color: '#000000' }}
+            >
                   {/* Branding Header */}
                   <div className="flex justify-between items-start mb-12">
                     <div className="space-y-4">
@@ -1244,9 +1240,7 @@ function CustomerDetailPanel({ customer, onClose, onEdit, onClone, onToggleStatu
                   </div>
                 </div>
               </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </TabsContent>
+            </TabsContent>
       </Tabs>
     </div>
   );
